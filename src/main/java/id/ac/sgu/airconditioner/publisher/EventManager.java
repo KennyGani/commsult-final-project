@@ -1,11 +1,12 @@
-package id.ac.sgu.thermometer.publisher;
+package id.ac.sgu.airconditioner.publisher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import id.ac.sgu.thermometer.listeners.EventListener;
+import id.ac.sgu.airconditioner.AirConditioner;
+import id.ac.sgu.airconditioner.listeners.EventListener;
 
 public class EventManager {
     Map<String, List<EventListener>> listeners = new HashMap<>();
@@ -21,10 +22,10 @@ public class EventManager {
         users.add(listener);
     }
 
-    public void notify(String eventType, double temperature) {
+    public void notify(String eventType, double temperature, AirConditioner airConditioner) {
         List<EventListener> users = listeners.get(eventType);
         for (EventListener listener : users) {
-            listener.update(eventType, temperature);
+            listener.update(eventType, temperature, airConditioner);
         }
     }
 }

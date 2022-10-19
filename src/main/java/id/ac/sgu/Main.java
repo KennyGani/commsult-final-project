@@ -2,10 +2,11 @@ package id.ac.sgu;
 
 import java.util.concurrent.TimeUnit;
 
-import id.ac.sgu.thermometer.handlers.EventHandler;
-import id.ac.sgu.thermometer.listeners.HighTemperatureDetectedListener;
-import id.ac.sgu.thermometer.listeners.LowTemperatureDetactedListener;
-import id.ac.sgu.thermometer.listeners.NormalTemperatureDetactedListener;
+import id.ac.sgu.airconditioner.AirConditioner;
+import id.ac.sgu.airconditioner.handlers.EventHandler;
+import id.ac.sgu.airconditioner.listeners.HighTemperatureDetectedListener;
+import id.ac.sgu.airconditioner.listeners.LowTemperatureDetactedListener;
+import id.ac.sgu.airconditioner.listeners.NormalTemperatureDetactedListener;
 import id.ac.sgu.utilities.RandomSensorNumber;
 
 public class Main {
@@ -15,9 +16,10 @@ public class Main {
 
 		RandomSensorNumber sensorNumber = new RandomSensorNumber();
 		EventHandler eventHandler = new EventHandler();
+		AirConditioner airConditioner = new AirConditioner();
 
-		eventHandler.events.subscribe("lowTemperatureDetected", new HighTemperatureDetectedListener());
-		eventHandler.events.subscribe("highTemperatureDetected", new LowTemperatureDetactedListener());
+		eventHandler.events.subscribe("highTemperatureDetected", new HighTemperatureDetectedListener());
+		eventHandler.events.subscribe("lowTemperatureDetected", new LowTemperatureDetactedListener());
 		eventHandler.events.subscribe("normalTemperatureDetected", new NormalTemperatureDetactedListener());
 
 		do {
@@ -25,21 +27,26 @@ public class Main {
 
 			sensorNumber.getSensorRandomizeNumber();
 
-			// System.out.println(sensorNumber.getTime());
-			System.out.println(sensorNumber.getTemperatureNumber());
-			// System.out.println(sensorNumber.getAnemoNumber());
-
-			if (sensorNumber.getTemperatureNumber() >= 28) {
-				eventHandler.highTemperatureDetected(sensorNumber.getTemperatureNumber());
+			if (sensorNumber.getTemperatureNumber() >= 27) {
+				eventHandler.highTemperatureDetected(sensorNumber.getTemperatureNumber(), airConditioner);
 			}
 
-			if (sensorNumber.getTemperatureNumber() > 15 && sensorNumber.getTemperatureNumber() < 28) {
-				eventHandler.normalTemperatureDetected(sensorNumber.getTemperatureNumber());
+			if (sensorNumber.getTemperatureNumber() >= 15 &&
+					sensorNumber.getTemperatureNumber() < 27) {
+				eventHandler.normalTemperatureDetected(sensorNumber.getTemperatureNumber(), airConditioner);
 			}
 
 			if (sensorNumber.getTemperatureNumber() < 15) {
-				eventHandler.lowTemperatureDetected(sensorNumber.getTemperatureNumber());
+				eventHandler.lowTemperatureDetected(sensorNumber.getTemperatureNumber(), airConditioner);
 			}
+
+			System.out.println(sensorNumber.getTemperatureNumber());
+			System.out.println(airConditioner.getAirConditionerStatus());
+			System.out.println(airConditioner.getAirConditionerPowerStatus());
+
+			// // System.out.println(sensorNumber.getTime());
+
+			// System.out.println(sensorNumber.getAnemoNumber());
 
 		} while (sensorActive);
 	}

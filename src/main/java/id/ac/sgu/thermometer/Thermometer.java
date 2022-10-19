@@ -3,8 +3,8 @@ package id.ac.sgu.thermometer;
 import java.util.Random;
 
 public class Thermometer {
-    private static double minTemperature = -40;
-    private static double maxTemperature = 50;
+    private static double minTemperature = 10;
+    private static double maxTemperature = 30;
     private static double currentTemperature;
     private static double maxTemperatureChangedInSecond = 10;
     private static boolean isTemperatureCreated = false;
