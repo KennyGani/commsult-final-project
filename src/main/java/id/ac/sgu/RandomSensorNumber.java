@@ -1,20 +1,22 @@
 package id.ac.sgu;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.time.LocalDateTime;
 
 public class RandomSensorNumber {
 
-    public void getSensorRandomizeNumber() {
+    public Map<String, Object> getSensorRandomizeNumber() {
+        Map<String, Object> map = new HashMap<>();
+
         Clock clock = new Clock();
         Thermometer thermometer = new Thermometer();
         Anemometer anemometer = new Anemometer();
 
-        LocalDateTime randomTime = clock.getCurrentTime();
-        double randomThermometer = thermometer.getRandomThermometerNumber();
-        double randomAnemometer = anemometer.getRandomAnemometerNumber();
+        map.put("time", clock.getCurrentTime());
+        map.put("thermoNumber", thermometer.getRandomThermometerNumber());
+        map.put("anemoNumber", anemometer.getRandomAnemometerNumber());
 
-        System.out.println(randomTime);
-        System.out.println(randomThermometer);
-        System.out.println(randomAnemometer);
+        return map;
     }
 }
