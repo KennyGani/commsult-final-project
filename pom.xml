@@ -136,7 +136,7 @@
 				<artifactId>javafx-maven-plugin</artifactId>
 				<version>0.0.8</version>
 				<configuration>
-					<mainClass>id.ac.sgu.HelloWorld</mainClass>
+					<mainClass>id.ac.sgu.Main</mainClass>
 				</configuration>
 				<executions>
 					<execution>
