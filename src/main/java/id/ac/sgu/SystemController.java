@@ -34,7 +34,7 @@ public class SystemController {
 		heatherEventHandler.events.subscribe("hotWeatherDetected", new HotWeatherDetactedListener());
 
 		do {
-			TimeUnit.SECONDS.sleep(2);
+			TimeUnit.SECONDS.sleep(1);
 
 			sensorNumber.getSensorRandomizeNumber();
 
@@ -56,13 +56,13 @@ public class SystemController {
 
 			System.out.println("temp : " + sensorNumber.getTemperatureNumber());
 
-			System.out.println(airConditioner.getAirConditionerStatus());
-			System.out.println(airConditioner.getAirConditionerPowerStatus());
+			System.out.println("AC");
+			System.out.println("-" + airConditioner.getAirConditionerStatus());
+			System.out.println("-" + airConditioner.getAirConditionerPowerStatus());
 
-			System.out.println("");
-
-			System.out.println(heather.getHeatherStatus());
-			System.out.println(heather.getHeatherPowerStatus());
+			System.out.println("Heather");
+			System.out.println("-" + heather.getHeatherStatus());
+			System.out.println("-" + heather.getHeatherPowerStatus());
 
 			System.out.println("");
 
