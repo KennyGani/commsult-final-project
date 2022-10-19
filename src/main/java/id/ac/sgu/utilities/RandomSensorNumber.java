@@ -2,8 +2,8 @@ package id.ac.sgu.utilities;
 
 import java.time.LocalTime;
 
-import id.ac.sgu.Anemometer;
-import id.ac.sgu.Clock;
+import id.ac.sgu.Clock.Clock;
+import id.ac.sgu.anemometer.Anemometer;
 import id.ac.sgu.thermometer.Thermometer;
 
 public class RandomSensorNumber {

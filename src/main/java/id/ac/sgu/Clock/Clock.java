@@ -1,4 +1,4 @@
-package id.ac.sgu;
+package id.ac.sgu.Clock;
 
 import java.time.LocalTime;
 
