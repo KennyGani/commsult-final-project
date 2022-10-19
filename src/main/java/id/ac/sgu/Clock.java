@@ -1,12 +1,11 @@
 package id.ac.sgu;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Clock {
+    public LocalTime getCurrentTime() {
 
-    public LocalDateTime getCurrentTime() {
-
-        LocalDateTime time = LocalDateTime.now();
+        LocalTime time = LocalTime.now();
 
         return time;
     }

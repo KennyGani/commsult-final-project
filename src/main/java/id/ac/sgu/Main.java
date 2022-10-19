@@ -1,6 +1,4 @@
 package id.ac.sgu;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -12,11 +10,11 @@ public class Main {
 		do {
 			TimeUnit.SECONDS.sleep(1);
 
-			Map<String, Object> map = sensorNumber.getSensorRandomizeNumber();
-			
-			System.out.println(map.get("time"));
-			System.out.println(map.get("anemoNumber"));
-			System.out.println(map.get("thermoNumber"));
+			sensorNumber.getSensorRandomizeNumber();
+
+			System.out.println(sensorNumber.getTime());
+			System.out.println(sensorNumber.getThermoNumber());
+			System.out.println(sensorNumber.getAnemoNumber());
 		} while (sensorActive);
 	}
 }
