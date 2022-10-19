@@ -1,6 +1,10 @@
-package id.ac.sgu;
+package id.ac.sgu.utilities;
 
 import java.time.LocalTime;
+
+import id.ac.sgu.Anemometer;
+import id.ac.sgu.Clock;
+import id.ac.sgu.thermometer.Thermometer;
 
 public class RandomSensorNumber {
     private LocalTime time;
@@ -17,15 +21,15 @@ public class RandomSensorNumber {
         this.anemoNumber = anemometer.getRandomAnemometerNumber();
     }
 
-    public LocalTime getTime(){
+    public LocalTime getTime() {
         return this.time;
     }
 
-    public double getThermoNumber(){
+    public double getTemperatureNumber() {
         return this.thermoNumber;
     }
 
-    public double getAnemoNumber(){
+    public double getAnemoNumber() {
         return this.anemoNumber;
     }
 }

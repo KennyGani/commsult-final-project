@@ -1,4 +1,4 @@
-package id.ac.sgu;
+package id.ac.sgu.thermometer;
 
 import java.util.Random;
 
