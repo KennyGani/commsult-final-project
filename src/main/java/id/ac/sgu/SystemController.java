@@ -1,5 +1,8 @@
 package id.ac.sgu;
 
+import java.lang.ModuleLayer.Controller;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import id.ac.sgu.airconditioner.AirConditionerController;
@@ -17,9 +20,13 @@ import id.ac.sgu.heather.heatherinterface.IHeather;
 import id.ac.sgu.heather.listeners.ColdWeatherDetactedListener;
 
 import id.ac.sgu.utilities.RandomSensorNumber;
+import id.ac.sgu.window.WindowController;
 
 public class SystemController {
 	private static boolean sensorActive = true;
+	private static boolean isRaining;
+	private static boolean isHeavyWind;
+	private static boolean isNight;
 
 	public static void main(String[] args) throws InterruptedException {
 
@@ -32,6 +39,8 @@ public class SystemController {
 
 		HeatherModel heatherModel = new HeatherModel();
 		IHeather iHeather = new HeatherController(heatherModel);
+
+		WindowController windowController = new WindowController();
 
 		acEventHandler.events.subscribe("highTemperatureDetected", new HighTemperatureDetectedListener());
 		acEventHandler.events.subscribe("lowTemperatureDetected", new LowTemperatureDetactedListener());
@@ -61,19 +70,43 @@ public class SystemController {
 				heatherEventHandler.coldWeatherDetected(iHeather);
 			}
 
-			System.out.println("Temp : " + sensorNumber.getTemperatureNumber());
+			if (sensorNumber.getRainDropSensorStatus()) {
+				isRaining = true;
+			} else {
+				isRaining = false;
+			}
 
-			System.out.println("AC");
-			System.out.println("-" + iAirConditioner.getAirConditionerStatus());
-			System.out.println("-" + iAirConditioner.getAirConditionerPowerStatus());
+			if (sensorNumber.getAnemoNumber() > 15) {
+				isHeavyWind = true;
+			} else {
+				isHeavyWind = false;
+			}
 
-			System.out.println("Heather");
-			System.out.println("-" + iHeather.getHeatherStatus());
-			System.out.println("-" + iHeather.getHeatherPowerStatus());
+			if (sensorNumber.getTime().isBefore(LocalTime.parse("18:00:00"))
+					&& sensorNumber.getTime().isAfter(LocalTime.parse("06:00:00"))) {
+				isNight = false;
+			} else {
+				isNight = true;
+			}
 
-			System.out.println("");
+			windowController.setWindowController(isRaining, isHeavyWind, isNight);
 
-			// // System.out.println(sensorNumber.getTime());
+			// System.out.println(windowController.getIsRaining());
+			// System.out.println(windowController.getIsHeavyWind());
+			// System.out.println(windowController.getIsNight());
+			// System.out.println("Temp : " + sensorNumber.getTemperatureNumber());
+
+			// System.out.println("AC");
+			// System.out.println("-" + iAirConditioner.getAirConditionerStatus());
+			// System.out.println("-" + iAirConditioner.getAirConditionerPowerStatus());
+
+			// System.out.println("Heather");
+			// System.out.println("-" + iHeather.getHeatherStatus());
+			// System.out.println("-" + iHeather.getHeatherPowerStatus());
+
+			// System.out.println("");
+
+			// System.out.println(sensorNumber.getTime());
 
 			// System.out.println(sensorNumber.getAnemoNumber());
 
