@@ -21,25 +21,56 @@ import id.ac.sgu.utilities.RandomSensorNumber;
 import id.ac.sgu.window.WindowController;
 import id.ac.sgu.window.model.WindowModel;
 import id.ac.sgu.window.windowinterface.IWindow;
+import javafx.stage.Window;
 
 public class SystemController {
+	private static SystemController instance = new SystemController();
+
 	private static boolean sensorActive = true;
-	private static boolean isManual = true;
+	private static boolean isManual = false;
 	private static boolean isRaining;
 	private static boolean isHeavyWind;
 	private static boolean isNight;
 
-	private static double currentTemperatureNumber = 20;
-	private static double currentAnemometerNumber = 25;
-	private static boolean currentRainingStatus = false;
-	private static LocalTime currentTime = LocalTime.parse("12:00:00");
+	private static double currentTemperatureNumber;
+	private static double currentAnemometerNumber;
+	private static boolean currentRainingStatus;
+	private static LocalTime currentTime;
+
+	
+	private static RandomSensorNumber sensorNumber = new RandomSensorNumber();
+	private static ACEventHandler acEventHandler = new ACEventHandler();
+	private static HeatherEventHandler heatherEventHandler = new HeatherEventHandler();
+
+	private static AirConditionerModel airConditioner = new AirConditionerModel();
+	private static IAirConditioner iAirConditioner = new AirConditionerController(airConditioner);
+
+	private static HeatherModel heatherModel = new HeatherModel();
+	private static IHeather iHeather = new HeatherController(heatherModel);
+
+	private static IWindow iWindow = new WindowModel();
+	private static WindowController windowController = new WindowController(iWindow);
+
+	private SystemController(){}
+
+	public static SystemController getInstance(){
+		return instance;
+	}
 
 	public void setManualTemperature(double temperatureNumber) {
 		SystemController.currentTemperatureNumber = temperatureNumber;
 	}
 
+	public double getManualTemperature() {
+		return currentTemperatureNumber;
+	}
+
 	public void setManualAnemometer(double anemometerNumber) {
 		SystemController.currentAnemometerNumber = anemometerNumber;
+	}
+
+	public double getManualAnemometer() {
+		return currentAnemometerNumber;
 	}
 
 	public void setManualRainingStatus(Boolean rainingStatus) {
@@ -50,21 +81,31 @@ public class SystemController {
 		SystemController.currentTime = time;
 	}
 
-	public static void main(String[] args) throws InterruptedException {
+	public LocalTime getCurrentTime() {
+		return currentTime;
+	}
 
-		RandomSensorNumber sensorNumber = new RandomSensorNumber();
-		ACEventHandler acEventHandler = new ACEventHandler();
-		HeatherEventHandler heatherEventHandler = new HeatherEventHandler();
+	public void setIsManual(boolean status){
+		SystemController.isManual = status;
+	}
 
-		AirConditionerModel airConditioner = new AirConditionerModel();
-		IAirConditioner iAirConditioner = new AirConditionerController(airConditioner);
+	public AirConditionerModel getAirConditioner(){
+		return airConditioner;
+	}
 
-		HeatherModel heatherModel = new HeatherModel();
-		IHeather iHeather = new HeatherController(heatherModel);
+	public HeatherModel getHeather(){
+		return heatherModel;
+	}
 
-		IWindow iWindow = new WindowModel();
-		WindowController windowController = new WindowController(iWindow);
+	public IWindow getWindow(){
+		return iWindow;
+	}
 
+	public RandomSensorNumber getSensorNumber(){
+		return sensorNumber;
+	}
+
+	public void run() throws InterruptedException{
 		acEventHandler.events.subscribe("highTemperatureDetected", new HighTemperatureDetectedListener());
 		acEventHandler.events.subscribe("lowTemperatureDetected", new LowTemperatureDetactedListener());
 		acEventHandler.events.subscribe("normalTemperatureDetected", new NormalTemperatureDetactedListener());
@@ -72,55 +113,71 @@ public class SystemController {
 		heatherEventHandler.events.subscribe("coldWeatherDetected", new ColdWeatherDetactedListener());
 		heatherEventHandler.events.subscribe("hotWeatherDetected", new HotWeatherDetactedListener());
 
-		do {
-			TimeUnit.SECONDS.sleep(1);
+		Thread thread = new Thread(() -> {
+			while(sensorActive){
+				try{
+					if (!isManual) {
+						sensorNumber.getSensorRandomizeNumber();
+						currentTemperatureNumber = sensorNumber.getTemperatureNumber();
+						currentAnemometerNumber = sensorNumber.getAnemoNumber();
+						currentRainingStatus = sensorNumber.getRainDropSensorStatus();
+						currentTime = sensorNumber.getTime();
+					}
+		
+					if (currentTemperatureNumber >= 27) {
+						acEventHandler.highTemperatureDetected(currentTemperatureNumber, iAirConditioner);
+						heatherEventHandler.hotWeatherDetected(iHeather);
+					}
+		
+					if (currentTemperatureNumber >= 15 &&
+							currentTemperatureNumber < 27) {
+						acEventHandler.normalTemperatureDetected(currentTemperatureNumber, iAirConditioner);
+						heatherEventHandler.hotWeatherDetected(iHeather);
+					}
+		
+					if (currentTemperatureNumber < 15) {
+						acEventHandler.lowTemperatureDetected(currentTemperatureNumber, iAirConditioner);
+						heatherEventHandler.coldWeatherDetected(iHeather);
+					}
+		
+					if (currentRainingStatus) {
+						isRaining = true;
+					} else {
+						isRaining = false;
+					}
+		
+					if (currentAnemometerNumber > 15) {
+						isHeavyWind = true;
+					} else {
+						isHeavyWind = false;
+					}
+		
+					if (currentTime.isAfter(LocalTime.parse("18:00:00"))
+							|| currentTime.isBefore(LocalTime.parse("06:00:00"))) {
+						isNight = true;
+					} else {
+						isNight = false;
+					}
 
-			if (!isManual) {
-				sensorNumber.getSensorRandomizeNumber();
+					// System.out.println("isNight: " + isNight);
+					// System.out.println("isHeavyWind: " + isHeavyWind);
+					// System.out.println("isRaining: " + isRaining);
+					// System.out.println("Window: " + iWindow.getWindowStatus());
 
-				currentTemperatureNumber = sensorNumber.getTemperatureNumber();
-				currentAnemometerNumber = sensorNumber.getAnemoNumber();
-				currentRainingStatus = sensorNumber.getRainDropSensorStatus();
-				currentTime = sensorNumber.getTime();
+		
+					windowController.setWindowController(isRaining, isHeavyWind, isNight);
+					if(isManual){
+						Thread.sleep(10);
+					}
+					else{
+						Thread.sleep(1000);
+					}
+				}
+				catch(Exception e){
+					System.out.println(e);
+				}
 			}
-
-			if (currentTemperatureNumber >= 27) {
-				acEventHandler.highTemperatureDetected(currentTemperatureNumber, iAirConditioner);
-				heatherEventHandler.hotWeatherDetected(iHeather);
-			}
-
-			if (currentTemperatureNumber >= 15 &&
-					currentTemperatureNumber < 27) {
-				acEventHandler.normalTemperatureDetected(currentTemperatureNumber, iAirConditioner);
-				heatherEventHandler.hotWeatherDetected(iHeather);
-			}
-
-			if (currentTemperatureNumber < 15) {
-				acEventHandler.lowTemperatureDetected(currentTemperatureNumber, iAirConditioner);
-				heatherEventHandler.coldWeatherDetected(iHeather);
-			}
-
-			if (currentRainingStatus) {
-				isRaining = true;
-			} else {
-				isRaining = false;
-			}
-
-			if (currentAnemometerNumber > 15) {
-				isHeavyWind = true;
-			} else {
-				isHeavyWind = false;
-			}
-
-			if (currentTime.isBefore(LocalTime.parse("18:00:00"))
-					&& currentTime.isAfter(LocalTime.parse("06:00:00"))) {
-				isNight = false;
-			} else {
-				isNight = true;
-			}
-
-			windowController.setWindowController(isRaining, isHeavyWind, isNight);
-
-		} while (sensorActive);
+		});
+		thread.start();
 	}
 }

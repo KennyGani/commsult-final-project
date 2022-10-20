@@ -22,7 +22,7 @@ public class Anemometer {
         if (maxAnemometerChangedInSecond > 0) {
             maxAnemometerChangedInSecond--;
         } else {
-            maxAnemometerChangedInSecond = random.nextInt(5);
+            maxAnemometerChangedInSecond = random.nextInt(10);
             decreaseAnemometer = random.nextBoolean();
         }
 

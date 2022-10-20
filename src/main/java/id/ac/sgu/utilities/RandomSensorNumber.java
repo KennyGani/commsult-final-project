@@ -2,8 +2,8 @@ package id.ac.sgu.utilities;
 
 import java.time.LocalTime;
 
-import id.ac.sgu.anemometer.Anemometer;
 import id.ac.sgu.clock.Clock;
+import id.ac.sgu.anemometer.Anemometer;
 import id.ac.sgu.raindropsensor.RainDropSensor;
 import id.ac.sgu.thermometer.Thermometer;
 
