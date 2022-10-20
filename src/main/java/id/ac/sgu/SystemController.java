@@ -24,9 +24,31 @@ import id.ac.sgu.window.windowinterface.IWindow;
 
 public class SystemController {
 	private static boolean sensorActive = true;
+	private static boolean isManual = true;
 	private static boolean isRaining;
 	private static boolean isHeavyWind;
 	private static boolean isNight;
+
+	private static double currentTemperatureNumber = 20;
+	private static double currentAnemometerNumber = 25;
+	private static boolean currentRainingStatus = false;
+	private static LocalTime currentTime = LocalTime.parse("12:00:00");
+
+	public void setManualTemperature(double temperatureNumber) {
+		SystemController.currentTemperatureNumber = temperatureNumber;
+	}
+
+	public void setManualAnemometer(double anemometerNumber) {
+		SystemController.currentAnemometerNumber = anemometerNumber;
+	}
+
+	public void setManualRainingStatus(Boolean rainingStatus) {
+		SystemController.currentRainingStatus = rainingStatus;
+	}
+
+	public void setCurrentTme(LocalTime time) {
+		SystemController.currentTime = time;
+	}
 
 	public static void main(String[] args) throws InterruptedException {
 
@@ -51,73 +73,53 @@ public class SystemController {
 		heatherEventHandler.events.subscribe("hotWeatherDetected", new HotWeatherDetactedListener());
 
 		do {
-			TimeUnit.SECONDS.sleep(1 / 2);
+			TimeUnit.SECONDS.sleep(1);
 
-			sensorNumber.getSensorRandomizeNumber();
+			if (!isManual) {
+				sensorNumber.getSensorRandomizeNumber();
 
-			if (sensorNumber.getTemperatureNumber() >= 27) {
-				acEventHandler.highTemperatureDetected(sensorNumber.getTemperatureNumber(), iAirConditioner);
+				currentTemperatureNumber = sensorNumber.getTemperatureNumber();
+				currentAnemometerNumber = sensorNumber.getAnemoNumber();
+				currentRainingStatus = sensorNumber.getRainDropSensorStatus();
+				currentTime = sensorNumber.getTime();
+			}
+
+			if (currentTemperatureNumber >= 27) {
+				acEventHandler.highTemperatureDetected(currentTemperatureNumber, iAirConditioner);
 				heatherEventHandler.hotWeatherDetected(iHeather);
 			}
 
-			if (sensorNumber.getTemperatureNumber() >= 15 &&
-					sensorNumber.getTemperatureNumber() < 27) {
-				acEventHandler.normalTemperatureDetected(sensorNumber.getTemperatureNumber(), iAirConditioner);
+			if (currentTemperatureNumber >= 15 &&
+					currentTemperatureNumber < 27) {
+				acEventHandler.normalTemperatureDetected(currentTemperatureNumber, iAirConditioner);
 				heatherEventHandler.hotWeatherDetected(iHeather);
 			}
 
-			if (sensorNumber.getTemperatureNumber() < 15) {
-				acEventHandler.lowTemperatureDetected(sensorNumber.getTemperatureNumber(), iAirConditioner);
+			if (currentTemperatureNumber < 15) {
+				acEventHandler.lowTemperatureDetected(currentTemperatureNumber, iAirConditioner);
 				heatherEventHandler.coldWeatherDetected(iHeather);
 			}
 
-			if (sensorNumber.getRainDropSensorStatus()) {
+			if (currentRainingStatus) {
 				isRaining = true;
 			} else {
 				isRaining = false;
 			}
 
-			if (sensorNumber.getAnemoNumber() > 15) {
+			if (currentAnemometerNumber > 15) {
 				isHeavyWind = true;
 			} else {
 				isHeavyWind = false;
 			}
 
-			if (sensorNumber.getTime().isBefore(LocalTime.parse("18:00:00"))
-					&& sensorNumber.getTime().isAfter(LocalTime.parse("06:00:00"))) {
+			if (currentTime.isBefore(LocalTime.parse("18:00:00"))
+					&& currentTime.isAfter(LocalTime.parse("06:00:00"))) {
 				isNight = false;
 			} else {
 				isNight = true;
 			}
 
 			windowController.setWindowController(isRaining, isHeavyWind, isNight);
-
-			// System.out.println("Time");
-			// System.out.println(sensorNumber.getTime());
-
-			// System.out.println("Rain");
-			// System.out.println(windowController.getIsRaining());
-			System.out.println("Wind");
-			// System.out.println(windowController.getIsHeavyWind());
-			System.out.println(sensorNumber.getAnemoNumber());
-			// System.out.println("Night");
-			// System.out.println(windowController.getIsNight());
-
-			System.out.println(iWindow.getWindowStatus());
-
-			// System.out.println("Temp : " + sensorNumber.getTemperatureNumber());
-
-			// System.out.println("AC");
-			// System.out.println("-" + iAirConditioner.getAirConditionerStatus());
-			// System.out.println("-" + iAirConditioner.getAirConditionerPowerStatus());
-
-			// System.out.println("Heather");
-			// System.out.println("-" + iHeather.getHeatherStatus());
-			// System.out.println("-" + iHeather.getHeatherPowerStatus());
-
-			// System.out.println("");
-
-			// System.out.println(sensorNumber.getAnemoNumber());
 
 		} while (sensorActive);
 	}

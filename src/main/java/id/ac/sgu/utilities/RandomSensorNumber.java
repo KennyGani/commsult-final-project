@@ -14,6 +14,7 @@ public class RandomSensorNumber {
     private boolean rainDropSensor;
 
     public void getSensorRandomizeNumber() {
+
         Clock clock = new Clock();
         Thermometer thermometer = new Thermometer();
         Anemometer anemometer = new Anemometer();
