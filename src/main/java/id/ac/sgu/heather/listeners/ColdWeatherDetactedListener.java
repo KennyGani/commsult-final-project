@@ -12,7 +12,7 @@ public class ColdWeatherDetactedListener implements HeatherEventListener {
     public void update(String eventType, IHeather Heather) {
 
         heatherPower = HeatherPowerEnum.ON;
-        heatherStatus = false;
+        heatherStatus = true;
 
         Heather.setHeatherStatus(heatherStatus, heatherPower);
     }

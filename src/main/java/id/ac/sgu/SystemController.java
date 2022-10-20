@@ -2,14 +2,16 @@ package id.ac.sgu;
 
 import java.util.concurrent.TimeUnit;
 
-import id.ac.sgu.airconditioner.AirConditioner;
+import id.ac.sgu.airconditioner.AirConditionerController;
 import id.ac.sgu.airconditioner.acinterface.IAirConditioner;
 import id.ac.sgu.airconditioner.handlers.ACEventHandler;
 import id.ac.sgu.airconditioner.listeners.HighTemperatureDetectedListener;
 import id.ac.sgu.airconditioner.listeners.LowTemperatureDetactedListener;
 import id.ac.sgu.airconditioner.listeners.NormalTemperatureDetactedListener;
+import id.ac.sgu.airconditioner.model.AirConditionerModel;
 import id.ac.sgu.heather.listeners.HotWeatherDetactedListener;
-import id.ac.sgu.heather.Heather;
+import id.ac.sgu.heather.model.HeatherModel;
+import id.ac.sgu.heather.HeatherController;
 import id.ac.sgu.heather.handlers.HeatherEventHandler;
 import id.ac.sgu.heather.heatherinterface.IHeather;
 import id.ac.sgu.heather.listeners.ColdWeatherDetactedListener;
@@ -24,12 +26,17 @@ public class SystemController {
 		RandomSensorNumber sensorNumber = new RandomSensorNumber();
 		ACEventHandler acEventHandler = new ACEventHandler();
 		HeatherEventHandler heatherEventHandler = new HeatherEventHandler();
-		IAirConditioner airConditioner = new AirConditioner();
-		IHeather heather = new Heather();
+
+		AirConditionerModel airConditioner = new AirConditionerModel();
+		IAirConditioner iAirConditioner = new AirConditionerController(airConditioner);
+
+		HeatherModel heatherModel = new HeatherModel();
+		IHeather iHeather = new HeatherController(heatherModel);
 
 		acEventHandler.events.subscribe("highTemperatureDetected", new HighTemperatureDetectedListener());
 		acEventHandler.events.subscribe("lowTemperatureDetected", new LowTemperatureDetactedListener());
 		acEventHandler.events.subscribe("normalTemperatureDetected", new NormalTemperatureDetactedListener());
+
 		heatherEventHandler.events.subscribe("coldWeatherDetected", new ColdWeatherDetactedListener());
 		heatherEventHandler.events.subscribe("hotWeatherDetected", new HotWeatherDetactedListener());
 
@@ -39,30 +46,30 @@ public class SystemController {
 			sensorNumber.getSensorRandomizeNumber();
 
 			if (sensorNumber.getTemperatureNumber() >= 27) {
-				acEventHandler.highTemperatureDetected(sensorNumber.getTemperatureNumber(), airConditioner);
-				heatherEventHandler.hotWeatherDetected(heather);
+				acEventHandler.highTemperatureDetected(sensorNumber.getTemperatureNumber(), iAirConditioner);
+				heatherEventHandler.hotWeatherDetected(iHeather);
 			}
 
 			if (sensorNumber.getTemperatureNumber() >= 15 &&
 					sensorNumber.getTemperatureNumber() < 27) {
-				acEventHandler.normalTemperatureDetected(sensorNumber.getTemperatureNumber(), airConditioner);
-				heatherEventHandler.hotWeatherDetected(heather);
+				acEventHandler.normalTemperatureDetected(sensorNumber.getTemperatureNumber(), iAirConditioner);
+				heatherEventHandler.hotWeatherDetected(iHeather);
 			}
 
 			if (sensorNumber.getTemperatureNumber() < 15) {
-				acEventHandler.lowTemperatureDetected(sensorNumber.getTemperatureNumber(), airConditioner);
-				heatherEventHandler.coldWeatherDetected(heather);
+				acEventHandler.lowTemperatureDetected(sensorNumber.getTemperatureNumber(), iAirConditioner);
+				heatherEventHandler.coldWeatherDetected(iHeather);
 			}
 
-			System.out.println("temp : " + sensorNumber.getTemperatureNumber());
+			System.out.println("Temp : " + sensorNumber.getTemperatureNumber());
 
 			System.out.println("AC");
-			System.out.println("-" + airConditioner.getAirConditionerStatus());
-			System.out.println("-" + airConditioner.getAirConditionerPowerStatus());
+			System.out.println("-" + iAirConditioner.getAirConditionerStatus());
+			System.out.println("-" + iAirConditioner.getAirConditionerPowerStatus());
 
 			System.out.println("Heather");
-			System.out.println("-" + heather.getHeatherStatus());
-			System.out.println("-" + heather.getHeatherPowerStatus());
+			System.out.println("-" + iHeather.getHeatherStatus());
+			System.out.println("-" + iHeather.getHeatherPowerStatus());
 
 			System.out.println("");
 

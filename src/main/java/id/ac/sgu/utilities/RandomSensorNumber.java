@@ -8,8 +8,8 @@ import id.ac.sgu.thermometer.Thermometer;
 
 public class RandomSensorNumber {
     private LocalTime time;
-    private double thermoNumber;
-    private double anemoNumber;
+    private double temperatureNumber;
+    private double anemometerNumber;
 
     public void getSensorRandomizeNumber() {
         Clock clock = new Clock();
@@ -17,8 +17,8 @@ public class RandomSensorNumber {
         Anemometer anemometer = new Anemometer();
 
         this.time = clock.getCurrentTime();
-        this.thermoNumber = thermometer.getRandomThermometerNumber();
-        this.anemoNumber = anemometer.getRandomAnemometerNumber();
+        this.temperatureNumber = thermometer.getRandomThermometerNumber();
+        this.anemometerNumber = anemometer.getRandomAnemometerNumber();
     }
 
     public LocalTime getTime() {
@@ -26,10 +26,10 @@ public class RandomSensorNumber {
     }
 
     public double getTemperatureNumber() {
-        return this.thermoNumber;
+        return this.temperatureNumber;
     }
 
     public double getAnemoNumber() {
-        return this.anemoNumber;
+        return this.anemometerNumber;
     }
 }
