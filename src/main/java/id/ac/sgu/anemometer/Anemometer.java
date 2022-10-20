@@ -5,7 +5,7 @@ import java.util.Random;
 public class Anemometer {
     private static double minAnemometer = 0.4;
     private static double maxAnemometer = 30;
-    private static double currentAnemometer;
+    private static double currentAnemometer = 15;
     private static double maxAnemometerChangedInSecond = 10;
     private static boolean isAnemometerCreated = false;
     private static boolean decreaseAnemometer = false;
@@ -22,7 +22,7 @@ public class Anemometer {
         if (maxAnemometerChangedInSecond > 0) {
             maxAnemometerChangedInSecond--;
         } else {
-            maxAnemometerChangedInSecond = random.nextInt(10);
+            maxAnemometerChangedInSecond = random.nextInt(5);
             decreaseAnemometer = random.nextBoolean();
         }
 

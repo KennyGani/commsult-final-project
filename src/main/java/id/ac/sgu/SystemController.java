@@ -1,8 +1,6 @@
 package id.ac.sgu;
 
-import java.lang.ModuleLayer.Controller;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import id.ac.sgu.airconditioner.AirConditionerController;
@@ -21,6 +19,8 @@ import id.ac.sgu.heather.listeners.ColdWeatherDetactedListener;
 
 import id.ac.sgu.utilities.RandomSensorNumber;
 import id.ac.sgu.window.WindowController;
+import id.ac.sgu.window.model.WindowModel;
+import id.ac.sgu.window.windowinterface.IWindow;
 
 public class SystemController {
 	private static boolean sensorActive = true;
@@ -40,7 +40,8 @@ public class SystemController {
 		HeatherModel heatherModel = new HeatherModel();
 		IHeather iHeather = new HeatherController(heatherModel);
 
-		WindowController windowController = new WindowController();
+		IWindow iWindow = new WindowModel();
+		WindowController windowController = new WindowController(iWindow);
 
 		acEventHandler.events.subscribe("highTemperatureDetected", new HighTemperatureDetectedListener());
 		acEventHandler.events.subscribe("lowTemperatureDetected", new LowTemperatureDetactedListener());
@@ -50,7 +51,7 @@ public class SystemController {
 		heatherEventHandler.events.subscribe("hotWeatherDetected", new HotWeatherDetactedListener());
 
 		do {
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.SECONDS.sleep(1 / 2);
 
 			sensorNumber.getSensorRandomizeNumber();
 
@@ -91,9 +92,19 @@ public class SystemController {
 
 			windowController.setWindowController(isRaining, isHeavyWind, isNight);
 
+			// System.out.println("Time");
+			// System.out.println(sensorNumber.getTime());
+
+			// System.out.println("Rain");
 			// System.out.println(windowController.getIsRaining());
+			System.out.println("Wind");
 			// System.out.println(windowController.getIsHeavyWind());
+			System.out.println(sensorNumber.getAnemoNumber());
+			// System.out.println("Night");
 			// System.out.println(windowController.getIsNight());
+
+			System.out.println(iWindow.getWindowStatus());
+
 			// System.out.println("Temp : " + sensorNumber.getTemperatureNumber());
 
 			// System.out.println("AC");
@@ -105,8 +116,6 @@ public class SystemController {
 			// System.out.println("-" + iHeather.getHeatherPowerStatus());
 
 			// System.out.println("");
-
-			// System.out.println(sensorNumber.getTime());
 
 			// System.out.println(sensorNumber.getAnemoNumber());
 

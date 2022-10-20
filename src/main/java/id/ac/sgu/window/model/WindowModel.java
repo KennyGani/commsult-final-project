@@ -1,6 +1,8 @@
 package id.ac.sgu.window.model;
 
-public class WindowModel {
+import id.ac.sgu.window.windowinterface.IWindow;
+
+public class WindowModel implements IWindow {
     private boolean isWindowOpen;
 
     public void setWindowStatus(boolean status) {
