@@ -110,12 +110,12 @@
       </Label>
       <Slider fx:id="tempSlider" disable="true" layoutX="637.0" layoutY="338.0" max="40.0" min="-20.0" prefHeight="14.0" prefWidth="277.0" value="-20.0" />
       <Slider fx:id="anemoSlider" disable="true" layoutX="637.0" layoutY="393.0" max="30.0" min="0.3" prefHeight="14.0" prefWidth="277.0" value="0.3" />
-      <Label layoutX="539.0" layoutY="438.0" text="Random:">
+      <Label layoutX="539.0" layoutY="491.0" text="Random:">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <CheckBox layoutX="637.0" layoutY="443.0" mnemonicParsing="false" onAction="#toggleRandom" selected="true">
+      <CheckBox layoutX="637.0" layoutY="496.0" mnemonicParsing="false" onAction="#toggleRandom" selected="true">
          <font>
             <Font size="14.0" />
          </font>
@@ -127,9 +127,19 @@
                   <Font name="System Bold" size="17.0" />
                </font>
             </Label>
-            <Label layoutX="95.0" layoutY="17.0" text="Changing Temperature" textFill="WHITE">
+            <Label fx:id="log1" layoutX="95.0" layoutY="5.0" prefHeight="16.0" prefWidth="365.0" textFill="WHITE">
                <font>
-                  <Font size="16.0" />
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label fx:id="log2" layoutX="95.0" layoutY="18.0" prefHeight="20.0" prefWidth="365.0" textFill="WHITE">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <Label fx:id="log3" layoutX="95.0" layoutY="35.0" prefHeight="16.0" prefWidth="365.0" textFill="WHITE">
+               <font>
+                  <Font size="11.0" />
                </font>
             </Label>
          </children>
@@ -174,5 +184,15 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
+      <Label layoutX="539.0" layoutY="437.0" text="Raining:">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <CheckBox fx:id="rainingButton" disable="true" layoutX="637.0" layoutY="443.0" mnemonicParsing="false" onAction="#toggleRaining">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
    </children>
 </AnchorPane>

@@ -158,12 +158,6 @@ public class SystemController {
 					} else {
 						isNight = false;
 					}
-
-					// System.out.println("isNight: " + isNight);
-					// System.out.println("isHeavyWind: " + isHeavyWind);
-					// System.out.println("isRaining: " + isRaining);
-					// System.out.println("Window: " + iWindow.getWindowStatus());
-
 		
 					windowController.setWindowController(isRaining, isHeavyWind, isNight);
 					if(isManual){
