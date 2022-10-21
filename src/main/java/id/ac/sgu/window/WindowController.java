@@ -1,6 +1,7 @@
 package id.ac.sgu.window;
 
 import id.ac.sgu.window.dtooutput.WindowDto;
+import id.ac.sgu.window.exception.SensorIncompleteException;
 import id.ac.sgu.window.handlers.WindowEventHandler;
 import id.ac.sgu.window.listeners.CloseWindowListener;
 import id.ac.sgu.window.listeners.OpenWindowListener;
@@ -40,6 +41,11 @@ public class WindowController {
         windowEventHandler.events.subscribe("openWindowEvent", new OpenWindowListener());
 
         windowEventHandler.events.subscribe("closeWindowEvent", new CloseWindowListener());
+
+        // java g bisa null :)
+        // if (isRaining == null || isHeavyWind == null || isNight == null) {
+        // SensorIncompleteException.SensorIncompleteException();
+        // }
 
         if (isRaining || isHeavyWind || isNight) {
             windowEventHandler.closeWindow(windowModel);
