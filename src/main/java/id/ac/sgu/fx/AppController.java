@@ -23,6 +23,7 @@ public class AppController {
     public boolean isRandom = true;
     public boolean isManual = false;
     public boolean manualRainingStatus = false;
+    public boolean isManualChartRunning = false;
     public Label clock, thermoNumber, anemoNumber, 
                 acStatus, heatherStatus, windowStatus,
                 rainingStatus, acPowerStatus, log1, log2, log3;
@@ -30,6 +31,7 @@ public class AppController {
     public RadioButton dayButton, nightButton;
     public CheckBox rainingButton;
     public LineChart<String, Number> thermoChart, anemoChart;
+    public int WINDOW_SIZE = 20;
     XYChart.Series<String, Number> dataThermo = new XYChart.Series<>();
     XYChart.Series<String, Number> dataAnemo = new XYChart.Series<>();
 
@@ -40,6 +42,9 @@ public class AppController {
                 systemController.setManualTemperature(Math.round(tempSlider.getValue() * 10.0) / 10.0);
                 dataThermo.getData().add(new XYChart.Data<String, Number>(String.valueOf(Math.random()), systemController.getManualTemperature()));
                 log("Set temperature to " + String.valueOf(systemController.getManualTemperature()));
+                if (dataThermo.getData().size() > WINDOW_SIZE){
+                    dataThermo.getData().remove(0);
+                }
             }
         });
 
@@ -48,6 +53,9 @@ public class AppController {
                 systemController.setManualAnemometer(Math.round(anemoSlider.getValue() * 10.0 ) / 10.0);
                 dataAnemo.getData().add(new XYChart.Data<String, Number>(String.valueOf(Math.random()), systemController.getManualAnemometer()));
                 log("Set anemo to " + String.valueOf(systemController.getManualAnemometer()));
+                if (dataAnemo.getData().size() > WINDOW_SIZE){
+                    dataAnemo.getData().remove(0);
+                }
             }
         });
 
@@ -79,7 +87,7 @@ public class AppController {
                     }
                     else{
                         acStatus.setText("OFF");
-                        acStatus.setText("OFF");
+                        acPowerStatus.setText("OFF");
                     }
                     if(systemController.getHeather().getHeatherStatus()){
                         heatherStatus.setText("ON");
@@ -93,7 +101,7 @@ public class AppController {
                     else{
                         windowStatus.setText("Closed");
                     }
-                    if(systemController.getSensorNumber().getRainDropSensorStatus()){
+                    if(systemController.getManualRainingStatus()){
                         rainingStatus.setText("Raining");
                     }
                     else{
@@ -103,6 +111,35 @@ public class AppController {
                     anemoNumber.setText(String.valueOf(systemController.getManualAnemometer()));
                     final LocalTime tempTime = systemController.getCurrentTime(); 
                     clock.setText(tempTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                });
+            }
+        });
+        thread.start();
+    }
+
+    public void stopManualChartAnimation(){
+        isManualChartRunning = false;
+    }
+
+    public void startManualChartAnimation(){
+        isManualChartRunning = true;
+        Thread thread = new Thread(() -> {
+            while(isManualChartRunning){
+                try{
+                    Thread.sleep(1000);
+                }
+                catch(Exception e){
+                    System.out.println(e);
+                }
+                Platform.runLater(() -> {
+                    if (dataThermo.getData().size() > WINDOW_SIZE){
+                        dataThermo.getData().remove(0);
+                    }
+                    if (dataAnemo.getData().size() > WINDOW_SIZE){
+                        dataAnemo.getData().remove(0);
+                    }
+                    dataThermo.getData().add(new XYChart.Data<String, Number>(String.valueOf(Math.random()), systemController.getManualTemperature()));
+                    dataAnemo.getData().add(new XYChart.Data<String, Number>(String.valueOf(Math.random()), systemController.getManualAnemometer()));
                 });
             }
         });
@@ -131,7 +168,7 @@ public class AppController {
                     }
                     else{
                         acStatus.setText("OFF");
-                        acStatus.setText("OFF");
+                        acPowerStatus.setText("OFF");
                     }
                     if(systemController.getHeather().getHeatherStatus()){
                         heatherStatus.setText("ON");
@@ -150,6 +187,12 @@ public class AppController {
                     }
                     else{
                         rainingStatus.setText("Sunny");
+                    }
+                    if (dataThermo.getData().size() > WINDOW_SIZE){
+                        dataThermo.getData().remove(0);
+                    }
+                    if (dataAnemo.getData().size() > WINDOW_SIZE){
+                        dataAnemo.getData().remove(0);
                     }
                 });
             }
@@ -194,6 +237,7 @@ public class AppController {
             dayButton.setDisable(true);
             nightButton.setDisable(true);
             rainingButton.setDisable(true);
+            stopManualChartAnimation();
             startClock();
             startChartAnimation();
             systemController.setIsManual(false);
@@ -209,6 +253,7 @@ public class AppController {
             stopThread();
             systemController.setIsManual(true);
             updateText();
+            startManualChartAnimation();
             log("Random turned off, use manual control.");
         }
     }

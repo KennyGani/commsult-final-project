@@ -77,6 +77,10 @@ public class SystemController {
 		SystemController.currentRainingStatus = rainingStatus;
 	}
 
+	public boolean getManualRainingStatus() {
+		return currentRainingStatus;
+	}
+
 	public void setCurrentTme(LocalTime time) {
 		SystemController.currentTime = time;
 	}
