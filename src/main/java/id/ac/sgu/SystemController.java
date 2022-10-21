@@ -1,7 +1,6 @@
 package id.ac.sgu;
 
 import java.time.LocalTime;
-import java.util.concurrent.TimeUnit;
 
 import id.ac.sgu.airconditioner.AirConditionerController;
 import id.ac.sgu.airconditioner.acinterface.IAirConditioner;
@@ -21,7 +20,6 @@ import id.ac.sgu.utilities.RandomSensorNumber;
 import id.ac.sgu.window.WindowController;
 import id.ac.sgu.window.model.WindowModel;
 import id.ac.sgu.window.windowinterface.IWindow;
-import javafx.stage.Window;
 
 public class SystemController {
 	private static SystemController instance = new SystemController();
@@ -37,7 +35,6 @@ public class SystemController {
 	private static boolean currentRainingStatus;
 	private static LocalTime currentTime;
 
-	
 	private static RandomSensorNumber sensorNumber = new RandomSensorNumber();
 	private static ACEventHandler acEventHandler = new ACEventHandler();
 	private static HeatherEventHandler heatherEventHandler = new HeatherEventHandler();
@@ -51,9 +48,10 @@ public class SystemController {
 	private static IWindow iWindow = new WindowModel();
 	private static WindowController windowController = new WindowController(iWindow);
 
-	private SystemController(){}
+	private SystemController() {
+	}
 
-	public static SystemController getInstance(){
+	public static SystemController getInstance() {
 		return instance;
 	}
 
@@ -89,27 +87,27 @@ public class SystemController {
 		return currentTime;
 	}
 
-	public void setIsManual(boolean status){
+	public void setIsManual(boolean status) {
 		SystemController.isManual = status;
 	}
 
-	public AirConditionerModel getAirConditioner(){
+	public AirConditionerModel getAirConditioner() {
 		return airConditioner;
 	}
 
-	public HeatherModel getHeather(){
+	public HeatherModel getHeather() {
 		return heatherModel;
 	}
 
-	public IWindow getWindow(){
+	public IWindow getWindow() {
 		return iWindow;
 	}
 
-	public RandomSensorNumber getSensorNumber(){
+	public RandomSensorNumber getSensorNumber() {
 		return sensorNumber;
 	}
 
-	public void run() throws InterruptedException{
+	public void run() throws InterruptedException {
 		acEventHandler.events.subscribe("highTemperatureDetected", new HighTemperatureDetectedListener());
 		acEventHandler.events.subscribe("lowTemperatureDetected", new LowTemperatureDetactedListener());
 		acEventHandler.events.subscribe("normalTemperatureDetected", new NormalTemperatureDetactedListener());
@@ -118,8 +116,8 @@ public class SystemController {
 		heatherEventHandler.events.subscribe("hotWeatherDetected", new HotWeatherDetactedListener());
 
 		Thread thread = new Thread(() -> {
-			while(sensorActive){
-				try{
+			while (sensorActive) {
+				try {
 					if (!isManual) {
 						sensorNumber.getSensorRandomizeNumber();
 						currentTemperatureNumber = sensorNumber.getTemperatureNumber();
@@ -127,51 +125,49 @@ public class SystemController {
 						currentRainingStatus = sensorNumber.getRainDropSensorStatus();
 						currentTime = sensorNumber.getTime();
 					}
-		
+
 					if (currentTemperatureNumber >= 27) {
 						acEventHandler.highTemperatureDetected(currentTemperatureNumber, iAirConditioner);
 						heatherEventHandler.hotWeatherDetected(iHeather);
 					}
-		
+
 					if (currentTemperatureNumber >= 15 &&
 							currentTemperatureNumber < 27) {
 						acEventHandler.normalTemperatureDetected(currentTemperatureNumber, iAirConditioner);
 						heatherEventHandler.hotWeatherDetected(iHeather);
 					}
-		
+
 					if (currentTemperatureNumber < 15) {
 						acEventHandler.lowTemperatureDetected(currentTemperatureNumber, iAirConditioner);
 						heatherEventHandler.coldWeatherDetected(iHeather);
 					}
-		
+
 					if (currentRainingStatus) {
 						isRaining = true;
 					} else {
 						isRaining = false;
 					}
-		
+
 					if (currentAnemometerNumber > 15) {
 						isHeavyWind = true;
 					} else {
 						isHeavyWind = false;
 					}
-		
+
 					if (currentTime.isAfter(LocalTime.parse("18:00:00"))
 							|| currentTime.isBefore(LocalTime.parse("06:00:00"))) {
 						isNight = true;
 					} else {
 						isNight = false;
 					}
-		
+
 					windowController.setWindowController(isRaining, isHeavyWind, isNight);
-					if(isManual){
+					if (isManual) {
 						Thread.sleep(10);
-					}
-					else{
+					} else {
 						Thread.sleep(1000);
 					}
-				}
-				catch(Exception e){
+				} catch (Exception e) {
 					System.out.println(e);
 				}
 			}
