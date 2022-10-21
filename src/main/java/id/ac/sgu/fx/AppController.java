@@ -22,18 +22,11 @@ public class AppController {
     public boolean isRandom = true;
     public boolean isManual = false;
     public boolean manualRainingStatus = false;
-<<<<<<< HEAD
     public boolean isManualChartRunning = false;
     public Label clock, thermoNumber, anemoNumber, 
                 acStatus, heatherStatus, windowStatus,
                 rainingStatus, acPowerStatus, log1, log2, log3;
     public Slider anemoSlider,tempSlider;
-=======
-    public Label clock, thermoNumber, anemoNumber,
-            acStatus, heatherStatus, windowStatus,
-            rainingStatus, acPowerStatus, log1, log2, log3;
-    public Slider anemoSlider, tempSlider;
->>>>>>> 91bc4ecc6994603550c7192744632131bdec6172
     public RadioButton dayButton, nightButton;
     public CheckBox rainingButton;
     public LineChart<String, Number> thermoChart, anemoChart;
@@ -104,11 +97,7 @@ public class AppController {
                     } else {
                         windowStatus.setText("Closed");
                     }
-<<<<<<< HEAD
                     if(systemController.getManualRainingStatus()){
-=======
-                    if (systemController.getSensorNumber().getRainDropSensorStatus()) {
->>>>>>> 91bc4ecc6994603550c7192744632131bdec6172
                         rainingStatus.setText("Raining");
                     } else {
                         rainingStatus.setText("Sunny");
@@ -123,7 +112,6 @@ public class AppController {
         thread.start();
     }
 
-<<<<<<< HEAD
     public void stopManualChartAnimation(){
         isManualChartRunning = false;
     }
@@ -154,9 +142,6 @@ public class AppController {
     }
 
     public void startChartAnimation(){
-=======
-    public void startChartAnimation() {
->>>>>>> 91bc4ecc6994603550c7192744632131bdec6172
         isChartRunning = true;
         Thread thread = new Thread(() -> {
             while (isChartRunning) {
